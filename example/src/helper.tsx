@@ -12,6 +12,9 @@ export function initTasks() {
       type: "project",
       hideChildren: false,
       displayOrder: 1,
+      data: {
+        teste: "teste",
+      }
     },
     {
       start: new Date(currentDate.getFullYear(), currentDate.getMonth(), 1),
@@ -24,10 +27,16 @@ export function initTasks() {
       ),
       name: "Idea",
       id: "Task 0",
-      progress: 45,
+      progress: 0,
       type: "task",
       project: "ProjectSample",
       displayOrder: 2,
+      data: {
+        level: 1
+      },
+      styles: {
+      backgroundColor: "blue",
+      }
     },
     {
       start: new Date(currentDate.getFullYear(), currentDate.getMonth(), 2),
@@ -89,6 +98,51 @@ export function initTasks() {
       end: new Date(currentDate.getFullYear(), currentDate.getMonth(), 19),
       name: "Party Time",
       id: "Task 9",
+      progress: 0,
+      isDisabled: true,
+      type: "task",
+    },
+    {
+      start: new Date(currentDate.getFullYear(), currentDate.getMonth(), 18),
+      end: new Date(currentDate.getFullYear(), currentDate.getMonth(), 19),
+      name: "Party Time 10",
+      id: "Task 10",
+      progress: 0,
+      isDisabled: true,
+      type: "task",
+    },
+    {
+      start: new Date(currentDate.getFullYear(), currentDate.getMonth(), 18),
+      end: new Date(currentDate.getFullYear(), currentDate.getMonth(), 19),
+      name: "Party Time 12",
+      id: "Task 12",
+      progress: 0,
+      isDisabled: true,
+      type: "task",
+    },
+    {
+      start: new Date(currentDate.getFullYear(), currentDate.getMonth(), 18),
+      end: new Date(currentDate.getFullYear(), currentDate.getMonth(), 19),
+      name: "Party Time 13",
+      id: "Task 13",
+      progress: 0,
+      isDisabled: true,
+      type: "task",
+    },
+    {
+      start: new Date(currentDate.getFullYear(), currentDate.getMonth(), 18),
+      end: new Date(currentDate.getFullYear(), currentDate.getMonth(), 19),
+      name: "Party Time 14",
+      id: "Task 14",
+      progress: 0,
+      isDisabled: true,
+      type: "task",
+    },
+    {
+      start: new Date(currentDate.getFullYear(), currentDate.getMonth(), 18),
+      end: new Date(currentDate.getFullYear(), currentDate.getMonth(), 19),
+      name: "Party Time 15",
+      id: "Task 15",
       progress: 0,
       isDisabled: true,
       type: "task",

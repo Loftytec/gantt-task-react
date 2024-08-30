@@ -65,6 +65,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   onDelete,
   onSelect,
   onExpanderClick,
+  onScrollCloseToBottom,
 }) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const taskListRef = useRef<HTMLDivElement>(null);
@@ -274,6 +275,10 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
         } else if (newScrollY > ganttFullHeight - ganttHeight) {
           newScrollY = ganttFullHeight - ganttHeight;
         }
+        
+        if (newScrollY > (ganttFullHeight - ganttHeight) * 0.8 && scrollY <= (ganttFullHeight - ganttHeight) * 0.8) {
+          if(onScrollCloseToBottom) onScrollCloseToBottom(event);
+        }
         if (newScrollY !== scrollY) {
           setScrollY(newScrollY);
           event.preventDefault();
@@ -301,9 +306,16 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   ]);
 
   const handleScrollY = (event: SyntheticEvent<HTMLDivElement>) => {
+    const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
+    const maxScrollTop = scrollHeight - clientHeight;
+
     if (scrollY !== event.currentTarget.scrollTop && !ignoreScrollEvent) {
       setScrollY(event.currentTarget.scrollTop);
       setIgnoreScrollEvent(true);
+
+      if (scrollTop > maxScrollTop * 0.8 && scrollY <= maxScrollTop * 0.8) {
+        if(onScrollCloseToBottom) onScrollCloseToBottom(event.nativeEvent);
+      }
     } else {
       setIgnoreScrollEvent(false);
     }

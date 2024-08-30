@@ -73,6 +73,11 @@ export interface EventOption {
    * Invokes on expander on task list
    */
   onExpanderClick?: (task: Task) => void;
+
+  /**
+ * Invokes on scroll is close to bottom
+ */
+  onScrollCloseToBottom?: (event?: Event) => void;
 }
 
 export interface DisplayOption {

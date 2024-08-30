@@ -19,7 +19,7 @@ const App = () => {
   }
 
   const handleTaskChange = (task: Task) => {
-    console.log("On date change Id:" + task.id);
+    console.log("On date change Id:" + task.id, task.data);
     let newTasks = tasks.map(t => (t.id === task.id ? task : t));
     if (task.project) {
       const [start, end] = getStartEndDateForProject(newTasks, task.project);
@@ -67,6 +67,8 @@ const App = () => {
     console.log("On expander click Id:" + task.id);
   };
 
+  
+
   return (
     <div className="Wrapper">
       <ViewSwitcher
@@ -87,8 +89,16 @@ const App = () => {
         onExpanderClick={handleExpanderClick}
         listCellWidth={isChecked ? "155px" : ""}
         columnWidth={columnWidth}
+        barBackgroundColor="#ff0000"
+        arrowIndent={10}
+        ganttHeight={200}
+        TooltipContent={() => (<></>)}
+        onScrollCloseToBottom={(e) => {
+          console.log('final task in view')
+          console.log(e)
+        }}
       />
-      <h3>Gantt With Limited Height</h3>
+      {/* <h3>Gantt With Limited Height</h3>
       <Gantt
         tasks={tasks}
         viewMode={view}
@@ -102,9 +112,46 @@ const App = () => {
         listCellWidth={isChecked ? "155px" : ""}
         ganttHeight={300}
         columnWidth={columnWidth}
-      />
+      /> */}
     </div>
   );
 };
+
+
+
+// const Teste =(props: {
+//     rowHeight: number;
+//     rowWidth: string;
+//     fontFamily: string;
+//     fontSize: string;
+//     locale: string;
+//     tasks: Task[];
+//     selectedTaskId: string;
+//     setSelectedTask: (taskId: string) => void;
+//     onExpanderClick: (task: Task) => void;
+// }) => {
+
+//   console.log(props,'teste')
+//   return (
+//     <div>
+//       <h1>{props.locale}</h1>
+//     </div>
+//   )
+// }
+
+// const Header =(props: {
+//     headerHeight: number;
+//     rowWidth: string;
+//     fontFamily: string;
+//     fontSize: string;
+// }) => {
+
+// console.log(props,'Header')
+// return (
+//   <div>
+//     <h1>{'Header'}</h1>
+//   </div>
+// )
+// }
 
 export default App;
