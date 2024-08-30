@@ -276,7 +276,17 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
           newScrollY = ganttFullHeight - ganttHeight;
         }
         
-        if (newScrollY > (ganttFullHeight - ganttHeight) * 0.8 && scrollY <= (ganttFullHeight - ganttHeight) * 0.8) {
+        const isCloseToEnd = newScrollY > (ganttFullHeight - ganttHeight) * 0.8 && scrollY <= (ganttFullHeight - ganttHeight) * 0.8;
+        console.log('isCloseToEnd',isCloseToEnd)
+        console.log('newScrollY',newScrollY)
+        console.log('scrollY',scrollY)
+        console.log('ganttFullHeight',ganttFullHeight)
+        console.log('ganttHeight',ganttHeight)
+        console.log('ganttFullHeight - ganttHeight',ganttFullHeight - ganttHeight)
+        console.log('(ganttFullHeight - ganttHeight) * 0.8',(ganttFullHeight - ganttHeight) * 0.8)
+
+
+        if (isCloseToEnd) {
           if(onScrollCloseToBottom) onScrollCloseToBottom(event);
         }
         if (newScrollY !== scrollY) {
@@ -313,7 +323,16 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
       setScrollY(event.currentTarget.scrollTop);
       setIgnoreScrollEvent(true);
 
-      if (scrollTop > maxScrollTop * 0.8 && scrollY <= maxScrollTop * 0.8) {
+
+      const isCloseToEnd = scrollTop > maxScrollTop * 0.8 && scrollY <= maxScrollTop * 0.8;
+      console.log('isCloseToEnd',isCloseToEnd)
+      console.log('maxScrollTop',maxScrollTop)
+      console.log('scrollY',scrollY)
+      console.log('clientHeight',clientHeight)
+      console.log('scrollTop',scrollTop)
+      console.log('maxScrollTop * 0.8',maxScrollTop * 0.8)
+
+      if (isCloseToEnd) {
         if(onScrollCloseToBottom) onScrollCloseToBottom(event.nativeEvent);
       }
     } else {

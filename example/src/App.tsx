@@ -71,12 +71,12 @@ const App = () => {
 
   return (
     <div className="Wrapper">
-      <ViewSwitcher
+      {/* <ViewSwitcher
         onViewModeChange={viewMode => setView(viewMode)}
         onViewListChange={setIsChecked}
         isChecked={isChecked}
       />
-      <h3>Gantt With Unlimited Height</h3>
+      <h3>Gantt With Unlimited Height</h3> */}
       <Gantt
         tasks={tasks}
         viewMode={view}
@@ -87,10 +87,10 @@ const App = () => {
         onClick={handleClick}
         onSelect={handleSelect}
         onExpanderClick={handleExpanderClick}
-        listCellWidth={isChecked ? "155px" : ""}
+        // listCellWidth={isChecked ? "155px" : ""}
         columnWidth={columnWidth}
-        barBackgroundColor="#ff0000"
-        arrowIndent={10}
+        // barBackgroundColor="#ff0000"
+        // arrowIndent={10}
         ganttHeight={200}
         TooltipContent={() => (<></>)}
         onScrollCloseToBottom={(e) => {
