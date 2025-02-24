@@ -1,7 +1,7 @@
 /* .gridRowSumsTime {
   fill: #797e87;
 } */
-.gridRowSumsTime {
+.capacityChartRowSumsTime {
   fill: #fff;
 }
 
@@ -9,18 +9,18 @@
   fill: #1f2837;
 }
 
-.gridRow {
+.capacityChartRow {
   fill: #fff;
 }
 
-.gridRow:nth-child(even) {
+.capacityChartRow:nth-child(even) {
   fill: #f5f5f5;
 }
 
-.gridRowLine {
+.capacityChartRowLine {
   stroke: #ebeff2;
 }
 
-.gridTick {
+.capacityChartTick {
   stroke: #e6e4e4;
 }

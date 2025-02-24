@@ -3,6 +3,8 @@ import { GridProps, Grid } from "../grid/grid";
 import { CalendarProps, Calendar } from "../calendar/calendar";
 import { TaskGanttContentProps, TaskGanttContent } from "./task-gantt-content";
 import styles from "./gantt.module.css";
+import { CapacityChartValue } from "../../types/public-types";
+import { CapacityChart } from "../capacity-chart/capacity-chart";
 
 export type TaskGanttProps = {
   gridProps: GridProps;
@@ -11,6 +13,8 @@ export type TaskGanttProps = {
   ganttHeight: number;
   scrollY: number;
   scrollX: number;
+  capacityChartHeigth: number;
+  capacityChart?: CapacityChartValue[];
 };
 export const TaskGantt: React.FC<TaskGanttProps> = ({
   gridProps,
@@ -19,6 +23,8 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
   ganttHeight,
   scrollY,
   scrollX,
+  capacityChart,
+  capacityChartHeigth,
 }) => {
   const ganttSVGRef = useRef<SVGSVGElement>(null);
   const horizontalContainerRef = useRef<HTMLDivElement>(null);
@@ -71,6 +77,34 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
           <TaskGanttContent {...newBarProps} />
         </svg>
       </div>
+      {capacityChart && (
+        <div
+          id="capacity-chart"
+          style={{
+            height: capacityChartHeigth ? capacityChartHeigth : 88,
+            display: "flex",
+            alignItems: "flex-end", // Isso garante que o SVG vá para a parte de baixo
+            width: gridProps.svgWidth,
+          }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width={gridProps.svgWidth}
+            height={capacityChartHeigth ? capacityChartHeigth : 88}
+            fontFamily={barProps.fontFamily}
+          >
+            <CapacityChart
+              capacityChartValue={capacityChart}
+              columnWidth={gridProps.columnWidth}
+              height={capacityChartHeigth ? capacityChartHeigth : 88}
+              dates={gridProps.dates}
+              rtl={gridProps.rtl}
+              svgWidth={gridProps.svgWidth}
+              todayColor={gridProps.todayColor}
+            />
+          </svg>
+        </div>
+      )}
     </div>
   );
 };
