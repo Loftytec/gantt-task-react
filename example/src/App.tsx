@@ -70,119 +70,140 @@ const App = () => {
     console.log("On expander click Id:" + task.id);
   };
 
-  //example using capacity chart
-  const calculateHoursByPeriod = useCallback(
-    (tasks: Task[], filterType: ViewMode): CapacityChartValue[]=> {
-      if (tasks.length === 0) return [];
+  const calculateTimeByPeriod = (
+    tasks: Task[],
+    filterType: ViewMode,
+    weekStartsOn: 0 | 1 = 1
+  ): CapacityChartValue[] => {
+    if (tasks.length === 0) return [];
 
-      // Filtra apenas as tarefas do tipo "task"
-      const tasksForReal = tasks.filter(task => task.type === "task");
+    const validTasks = tasks.filter(
+      task =>
+        task.type === "task" &&
+        !isNaN(task.start.getTime()) &&
+        !isNaN(task.end.getTime())
+    );
 
-      // Encontra a menor data de início e a maior data de término
-      const minStart = new Date(Math.min(...tasksForReal.map(task => task.start.getTime())));
-      const maxEnd = new Date(Math.max(...tasksForReal.map(task => task.end.getTime())));
+    if (validTasks.length === 0) return [];
 
-      // Criar mapa baseado no filtro escolhido
-      const mapDuration: { [key: string]: number } = {};
-      let cursor = new Date(minStart);
+    const minStart = new Date(
+      Math.min(...validTasks.map(task => task.start.getTime()))
+    );
+    const maxEnd = new Date(
+      Math.max(...validTasks.map(task => task.end.getTime()))
+    );
 
-      while (cursor <= maxEnd) {
-        let key: string;
+    const getFirstDayOfPeriod = (date: Date): Date => {
+      switch (filterType) {
+        case "Day":
+          return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        case "Week":
+          const weekStart = new Date(date);
+          weekStart.setDate(
+            date.getDate() - ((date.getDay() - weekStartsOn + 7) % 7)
+          );
+          return new Date(
+            weekStart.getFullYear(),
+            weekStart.getMonth(),
+            weekStart.getDate()
+          );
+        case "Month":
+          return new Date(date.getFullYear(), date.getMonth(), 1);
+        case "Year":
+          return new Date(date.getFullYear(), 0, 1);
+        default:
+          return new Date(date);
+      }
+    };
 
-        switch (filterType) {
-          case "Day":
-            key = cursor.toISOString().split("T")[0] + " 00:00:00";
-            cursor.setDate(cursor.getDate() + 1);
-            break;
-          case "Week":
-            cursor.setDate(cursor.getDate() - cursor.getDay() + 1); // Ajusta para segunda-feira
-            key = cursor.toISOString().split("T")[0] + " 00:00:00";
-            cursor.setDate(cursor.getDate() + 7);
-            break;
-          case "Month":
-            cursor.setDate(1); // Primeiro dia do mês
-            key = cursor.toISOString().split("T")[0] + " 00:00:00";
-            cursor.setMonth(cursor.getMonth() + 1);
-            break;
-          case "Year":
-            cursor.setMonth(0, 1); // Primeiro dia do ano
-            key = cursor.toISOString().split("T")[0] + " 00:00:00";
-            cursor.setFullYear(cursor.getFullYear() + 1);
-            break;
-        }
+    const mapDuration: Record<string, number> = {};
+    let cursor = new Date(minStart);
 
+    // Preencher todos os períodos
+    while (cursor <= maxEnd) {
+      const periodStart = getFirstDayOfPeriod(cursor);
+      const key = `${periodStart.getFullYear()}-${
+        periodStart.getMonth() + 1
+      }-${periodStart.getDate()} 00:00:00`;
+
+      if (!mapDuration[key]) {
         mapDuration[key] = 0;
       }
 
-      // Percorre todas as tarefas e adiciona o tempo correto por período
-      tasksForReal.forEach(task => {
-        let current = new Date(task.start);
+      // Avançar o cursor
+      switch (filterType) {
+        case "Day":
+          cursor.setDate(cursor.getDate() + 1);
+          break;
+        case "Week":
+          cursor.setDate(cursor.getDate() + 7);
+          break;
+        case "Month":
+          cursor = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1);
+          break;
+        case "Year":
+          cursor = new Date(cursor.getFullYear() + 1, 0, 1);
+          break;
+      }
+    }
 
-        while (current <= task.end) {
-          let key: string;
+    // Calcular durações
+    validTasks.forEach(task => {
+      let current = new Date(task.start);
 
-          switch (filterType) {
-            case "Day":
-              key = current.toISOString().split("T")[0] + " 00:00:00";
-              current.setDate(current.getDate() + 1);
-              break;
-            case "Week":
-              current.setDate(current.getDate() - current.getDay() + 1);
-              key = current.toISOString().split("T")[0] + " 00:00:00";
-              current.setDate(current.getDate() + 7);
-              break;
-            case "Month":
-              current.setDate(1);
-              key = current.toISOString().split("T")[0] + " 00:00:00";
-              current.setMonth(current.getMonth() + 1);
-              break;
-            case "Year":
-              current.setMonth(0, 1);
-              key = current.toISOString().split("T")[0] + " 00:00:00";
-              current.setFullYear(current.getFullYear() + 1);
-              break;
-          }
+      while (current <= task.end) {
+        const periodStart = getFirstDayOfPeriod(current);
+        const nextPeriod = new Date(periodStart);
 
-          const periodStart = new Date(key);
-          const periodEnd = new Date(periodStart);
-
-          // Define o fim do período baseado no filtro
-          if (filterType === "Day") periodEnd.setHours(23, 59, 59, 999);
-          else if (filterType === "Week") periodEnd.setDate(periodStart.getDate() + 6);
-          else if (filterType === "Month") periodEnd.setMonth(periodStart.getMonth() + 1, 0);
-          else if (filterType === "Year") periodEnd.setFullYear(periodStart.getFullYear() + 1, 0, 0);
-
-          const overlapStart = Math.max(task.start.getTime(), periodStart.getTime());
-          const overlapEnd = Math.min(task.end.getTime(), periodEnd.getTime());
-          const overlapDuration = (overlapEnd - overlapStart)
-
-          if (overlapDuration > 0) {
-            mapDuration[key] += overlapDuration;
-          }
+        switch (filterType) {
+          case "Day":
+            nextPeriod.setDate(periodStart.getDate() + 1);
+            break;
+          case "Week":
+            nextPeriod.setDate(periodStart.getDate() + 7);
+            break;
+          case "Month":
+            nextPeriod.setMonth(periodStart.getMonth() + 1);
+            break;
+          case "Year":
+            nextPeriod.setFullYear(periodStart.getFullYear() + 1);
+            break;
         }
-      });
-      return Object.keys(mapDuration)
-      .sort()
-      .map((key) => ({
+
+        const overlapStart = Math.max(current.getTime(), periodStart.getTime());
+        const overlapEnd = Math.min(task.end.getTime(), nextPeriod.getTime());
+        const durationTimes = overlapEnd - overlapStart;
+
+        if (durationTimes > 0) {
+          const key = `${periodStart.getFullYear()}-${
+            periodStart.getMonth() + 1
+          }-${periodStart.getDate()} 00:00:00`;
+          mapDuration[key] += durationTimes;
+        }
+
+        current = new Date(nextPeriod);
+      }
+    });
+
+    // Formatar resultado
+    return Object.entries(mapDuration)
+      .sort(
+        ([a], [b]) =>
+          new Date(a.split(" ")[0]).getTime() -
+          new Date(b.split(" ")[0]).getTime()
+      )
+      .map(([key, value]) => ({
         date: new Date(key),
-        value: mapDuration[key],
-        name: mapDuration[key] === 0 ? "" : "h",
-      }));
-    }, []
-  );
-
-
+        value: Number(value),
+        name: "h",
+      }))
+      .filter(item => item.value > 0);
+  };
   useEffect(() => {
-    const newCapacityChartValues = calculateHoursByPeriod(tasks, view);
+    const newCapacityChartValues = calculateTimeByPeriod(tasks, view);
     console.log("chart", newCapacityChartValues);
     setCapacityChartValues(newCapacityChartValues);
-  }, [view, tasks, calculateHoursByPeriod]);
-
-  // useEffect(() => {
-  //   const newCapacityChartValues = calcularHorasPorPeriodo(tasks, view);
-  //   console.log("chart", newCapacityChartValues);
-  //   setCapacityChartValues(newCapacityChartValues);
-  // }, [view, tasks, calcularHorasPorPeriodo]);
+  }, [view, tasks]);
 
   return (
     <div className="Wrapper">
