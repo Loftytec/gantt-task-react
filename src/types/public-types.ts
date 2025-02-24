@@ -34,6 +34,12 @@ export interface Task {
   data?: any;
 }
 
+export interface CapacityChartValue {
+  date: Date;
+  value: number;
+  name?: string;
+}
+
 export interface EventOption {
   /**
    * Time step value for date changes.
@@ -144,6 +150,8 @@ export interface StylingOption {
     setSelectedTask: (taskId: string) => void;
     onExpanderClick: (task: Task) => void;
   }>;
+  capacityChart?: CapacityChartValue[];
+  capacityChartHeigth?: number;
 }
 
 export interface GanttProps extends EventOption, DisplayOption, StylingOption {
