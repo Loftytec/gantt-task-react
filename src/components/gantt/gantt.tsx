@@ -58,6 +58,8 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   TooltipContent = StandardTooltipContent,
   TaskListHeader = TaskListHeaderDefault,
   TaskListTable = TaskListTableDefault,
+  capacityChart,
+  capacityChartHeigth = 0,
   onDateChange,
   onProgressChange,
   onDoubleClick,
@@ -275,10 +277,12 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
         } else if (newScrollY > ganttFullHeight - ganttHeight) {
           newScrollY = ganttFullHeight - ganttHeight;
         }
-        
-        const isCloseToEnd = newScrollY > (ganttFullHeight - ganttHeight) * 0.8 && scrollY <= (ganttFullHeight - ganttHeight) * 0.8;
+
+        const isCloseToEnd =
+          newScrollY > (ganttFullHeight - ganttHeight) * 0.8 &&
+          scrollY <= (ganttFullHeight - ganttHeight) * 0.8;
         if (isCloseToEnd) {
-          if(onScrollCloseToBottom) onScrollCloseToBottom(event);
+          if (onScrollCloseToBottom) onScrollCloseToBottom(event);
         }
         if (newScrollY !== scrollY) {
           setScrollY(newScrollY);
@@ -314,9 +318,10 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
       setScrollY(event.currentTarget.scrollTop);
       setIgnoreScrollEvent(true);
 
-      const isCloseToEnd = scrollTop > maxScrollTop * 0.8 && scrollY <= maxScrollTop * 0.8;
+      const isCloseToEnd =
+        scrollTop > maxScrollTop * 0.8 && scrollY <= maxScrollTop * 0.8;
       if (isCloseToEnd) {
-        if(onScrollCloseToBottom) onScrollCloseToBottom(event.nativeEvent);
+        if (onScrollCloseToBottom) onScrollCloseToBottom(event.nativeEvent);
       }
     } else {
       setIgnoreScrollEvent(false);
@@ -479,6 +484,8 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
           ganttHeight={ganttHeight}
           scrollY={scrollY}
           scrollX={scrollX}
+          capacityChart={capacityChart}
+          capacityChartHeigth={capacityChartHeigth}
         />
         {ganttEvent.changedTask && (
           <Tooltip

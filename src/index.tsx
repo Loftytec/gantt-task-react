@@ -6,4 +6,5 @@ export type {
   StylingOption,
   DisplayOption,
   EventOption,
+  CapacityChartValue,
 } from "./types/public-types";
