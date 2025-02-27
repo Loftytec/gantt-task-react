@@ -8,6 +8,7 @@
 .ganttTable_Header {
   display: table-row;
   list-style: none;
+  background-color: #FFF;
 }
 
 .ganttTable_HeaderSeparator {

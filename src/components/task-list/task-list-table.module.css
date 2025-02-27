@@ -7,6 +7,7 @@
 .taskListTableRow {
   display: table-row;
   text-overflow: ellipsis;
+  background-color: #FFF;
 }
 
 .taskListTableRow:nth-of-type(even) {

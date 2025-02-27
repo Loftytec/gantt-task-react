@@ -77,7 +77,7 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
           <TaskGanttContent {...newBarProps} />
         </svg>
       </div>
-      {capacityChart && (
+      {capacityChart && capacityChart.length > 0 ? (
         <div
           id="capacity-chart"
           style={{
@@ -85,6 +85,7 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
             display: "flex",
             alignItems: "flex-end", // Isso garante que o SVG vá para a parte de baixo
             width: gridProps.svgWidth,
+            backgroundColor: "#d2d4d7"
           }}
         >
           <svg
@@ -104,6 +105,8 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
             />
           </svg>
         </div>
+      ) : (
+        <div></div>
       )}
     </div>
   );
